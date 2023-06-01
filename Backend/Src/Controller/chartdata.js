@@ -12,6 +12,7 @@ const createTableQuery = `CREATE TABLE IF NOT EXISTS stock_data (
   Volume REAL
 )`;
 
+const selectQuery = `Select * From stock_data`;
 const readCSVData = async ()=>{
     const workbook = XLSX.readFile(file_path);
 
@@ -33,16 +34,22 @@ const readCSVData = async ()=>{
 }
 
 const saveDataDB = (jsonData)=>{
-    db.run(createTableQuery, (err) => {
+    db.run(createTableQuery, async (err) => {
   if (err) {
     console.error(err.message);
   }
   console.log('Table created successfully or already exists.');
   const keys = [ 'Date', 'Open', 'High', 'Low', 'Close', 'AdjClose', 'Volume' ]
+        let resultFromDB =    [];
+    db.get('SELECT * FROM stock_data LIMIT 1', (err, row) => {
+    if (err) {
+      return console.error(err.message);
+    }
 
-
-    // console.log(Object.keys(jsonData[0]));
-  jsonData.forEach(async (row) => {
+    console.log("value of ",row)
+    if(!row)
+    {
+       jsonData.forEach(async (row) => {
     let placeholders = Object.values(row).map(() => '?').join(',');
 
     let sql = `INSERT INTO stock_data(${keys.join(',')}) VALUES(${placeholders})`;
@@ -54,10 +61,20 @@ const saveDataDB = (jsonData)=>{
       console.log(`Row inserted with rowid ${this.lastID}`);
     });
   });
+    }
+    });
+
+
 });
 }
 
-const getCSVData = (req,res,next)=>{
+const getCSVData =  (req,res,next)=>{
+    var resultData=[]
+      db.all(selectQuery,(err,result)=>{
+        if(err)
+            return err;
 
+        return res.status(200).json({success:true,message:"Data of Stocks",data:result})
+    })
 }
-module.exports ={readCSVData}
+module.exports ={readCSVData,getCSVData}
