@@ -1,6 +1,6 @@
 var router = require('express').Router()
-var {readCSVData} = require('../Controller/chartdata')
+var {readCSVData,getCSVData} = require('../Controller/chartdata')
 
-router.get("/data", readCSVData);
+router.get("/data", getCSVData);
 
 module.exports = router;

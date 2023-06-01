@@ -18,7 +18,13 @@ const readCSVData = async ()=>{
 
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
-    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+    let jsonData = XLSX.utils.sheet_to_json(worksheet,{ cellDates: true });
+    jsonData = jsonData.map(row => {
+      const dateObj = XLSX.SSF.parse_date_code(row['Date']);
+      row['Date'] = new Date(dateObj.y, dateObj.m - 1, dateObj.d);
+      return row;
+    });
+    //console.log(jsonData)
 
    await saveDataDB((jsonData));
     //return jsonData;
@@ -77,4 +83,7 @@ const getCSVData =  (req,res,next)=>{
         return res.status(200).json({success:true,message:"Data of Stocks",data:result})
     })
 }
+
+
+
 module.exports ={readCSVData,getCSVData}
