@@ -13,6 +13,6 @@ const PORT = process.env.port || 3001;
 app.listen(PORT, ()=>{
     console.log("Lumberfut Server is running on the port: "+PORT)
      readCSVData();
-    //getCSVData()
+    
 })
 

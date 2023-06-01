@@ -3,7 +3,7 @@ const path = require('path');
 var file_path = path.resolve(__dirname,'../../public/CSV_Files/LumberFut.xlsx' );
 const db = require("../DB/db")
 const createTableQuery = `CREATE TABLE IF NOT EXISTS stock_data (
-  Date TEXT,
+  Date DATE,
   Open REAL,
   High REAL,
   Low REAL,
@@ -21,7 +21,9 @@ const readCSVData = async ()=>{
     let jsonData = XLSX.utils.sheet_to_json(worksheet,{ cellDates: true });
     jsonData = jsonData.map(row => {
       const dateObj = XLSX.SSF.parse_date_code(row['Date']);
-      row['Date'] = new Date(dateObj.y, dateObj.m - 1, dateObj.d);
+      //row['Date'] = new Date(dateObj.y, dateObj.m - 1, dateObj.d);
+      row['Date'] = `${dateObj.y}-${dateObj.m}-${dateObj.d}`;
+      
       return row;
     });
     //console.log(jsonData)
@@ -44,7 +46,7 @@ const saveDataDB = (jsonData)=>{
   if (err) {
     console.error(err.message);
   }
-  console.log('Table created successfully or already exists.');
+  
   const keys = [ 'Date', 'Open', 'High', 'Low', 'Close', 'AdjClose', 'Volume' ]
         let resultFromDB =    [];
     db.get('SELECT * FROM stock_data LIMIT 1', (err, row) => {
@@ -52,10 +54,10 @@ const saveDataDB = (jsonData)=>{
       return console.error(err.message);
     }
 
-    console.log("value of ",row)
     if(!row)
     {
-       jsonData.forEach(async (row) => {
+      console.log('Cell value Reloaded');
+      jsonData.forEach(async (row) => {
     let placeholders = Object.values(row).map(() => '?').join(',');
 
     let sql = `INSERT INTO stock_data(${keys.join(',')}) VALUES(${placeholders})`;
@@ -64,7 +66,7 @@ const saveDataDB = (jsonData)=>{
       if (err) {
         return console.error(err.message);
       }
-      console.log(`Row inserted with rowid ${this.lastID}`);
+      //console.log(`Row inserted with rowid ${this.lastID}`);
     });
   });
     }
@@ -75,15 +77,37 @@ const saveDataDB = (jsonData)=>{
 }
 
 const getCSVData =  (req,res,next)=>{
-    var resultData=[]
+    
       db.all(selectQuery,(err,result)=>{
         if(err)
-            return err;
+        {
+          console.log(err);
+          res.status(500).json({success:false,message:err})
+        }
 
         return res.status(200).json({success:true,message:"Data of Stocks",data:result})
     })
 }
 
 
+const truncatTable = (req,res) =>{
+  db.serialize(() => {
+    db.run('DELETE FROM stock_data', (err) => {
+      if (err) {
 
-module.exports ={readCSVData,getCSVData}
+        console.error(err.message);
+        res.status(500),json({success:false,message:err.message})
+      }
+      db.run('VACUUM', (err) => {
+        if (err) {
+          console.error(err.message);
+        }
+        
+      });
+      res.status(200).json({success:true,message:"Table Truncate successfully"})
+    });
+  
+    
+  });
+}
+module.exports ={readCSVData,getCSVData,truncatTable}
