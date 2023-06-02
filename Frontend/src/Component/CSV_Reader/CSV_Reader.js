@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-
+import Slider from  'react-input-slider'
 // import {Line} from 'react-chartjs-2'
 
 
@@ -9,10 +9,14 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'r
 const ChartComponent=({data})=>{
     const [selectedOption, setSelectedOption] = useState("Open")
     const [selectedData, setSelectedData] = useState([]);
+    const [x, setX] = useState(0);
 
     useEffect(()=>{
-        setSelectedData(data)
-    }, [data])
+        //console.log("useEffected has been called")
+        console.log(selectedData,"Befgore")
+        setSelectedData(data.slice(0, x))
+        console.log(selectedData,"after")
+    }, [data,x])
 
     const handleOptionChange = (e) => {
         setSelectedOption(e.target.value)
@@ -60,7 +64,7 @@ const ChartComponent=({data})=>{
             <LineChart
                 width={700}
                 height={500}
-                data={data}
+                data={selectedData}
                 margin={{
                 top: 5, right: 30, left: 20, bottom: 5,
                 }}
@@ -72,6 +76,16 @@ const ChartComponent=({data})=>{
                 <Legend />
                 <Line type="monotone" dataKey={selectedOption} stroke="#8884d8" />
             </LineChart>
+            
+            <Slider
+            axis="x"
+            xstep={1}
+            xmin={1}
+            xmax={data.length}
+            x={x}
+            onChange={({ x }) => {
+             setX(x)}}
+            />
            
          {/* { selectedData.length>0&& <Line data={chartData}/> } */}
                 
