@@ -4,8 +4,8 @@ import {Line} from "chart.js"
 
 
 
-const Chart=()=>{
-
+const ChartComponent=({data})=>{
+    console.log(data)
     const [selectedOption, setSelectedOption] = useState("Open")
     const handleOptionChange = (e) => {
         setSelectedOption(e.target.value)
@@ -25,4 +25,4 @@ const Chart=()=>{
     )
 }
 
-export default Chart;
+export default ChartComponent;
