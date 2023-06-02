@@ -1,5 +1,5 @@
 import React from 'react';
-
-const getData=()=>{
+import {Line} from "chart.js"
+const Chart=()=>{
 
 }
