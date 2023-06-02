@@ -12,10 +12,7 @@ const ChartComponent=({data})=>{
     const [x, setX] = useState(0);
 
     useEffect(()=>{
-        //console.log("useEffected has been called")
-        console.log(selectedData,"Befgore")
         setSelectedData(data.slice(0, x))
-        console.log(selectedData,"after")
     }, [data,x])
 
     const handleOptionChange = (e) => {
@@ -87,7 +84,6 @@ const ChartComponent=({data})=>{
              setX(x)}}
             />
            
-         {/* { selectedData.length>0&& <Line data={chartData}/> } */}
                 
            
         </>

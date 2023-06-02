@@ -23,9 +23,17 @@ const readCSVData = async ()=>{
       const dateObj = XLSX.SSF.parse_date_code(row['Date']);
       //row['Date'] = new Date(dateObj.y, dateObj.m - 1, dateObj.d);
       row['Date'] = `${dateObj.y}-${dateObj.m}-${dateObj.d}`;
-      
+      Object.keys(row).forEach(key => {
+        if (row[key] === "-") {
+          row[key] = 0;
+        }
+      });
       return row;
     });
+
+    // jsonData = jsonData.filter(row => {
+    //   return !Object.values(row).includes("-");
+    // });
     //console.log(jsonData)
 
    await saveDataDB((jsonData));
@@ -48,7 +56,6 @@ const saveDataDB = (jsonData)=>{
   }
   
   const keys = [ 'Date', 'Open', 'High', 'Low', 'Close', 'AdjClose', 'Volume' ]
-        let resultFromDB =    [];
     db.get('SELECT * FROM stock_data LIMIT 1', (err, row) => {
     if (err) {
       return console.error(err.message);
