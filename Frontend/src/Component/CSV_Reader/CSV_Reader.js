@@ -5,12 +5,15 @@ import {Line} from "chart.js"
 
 
 const Chart=()=>{
+
+    const [selectedOption, setSelectedOption] = useState("Open")
     const handleOptionChange = (e) => {
+        setSelectedOption(e.target.value)
         console.log(e.target.value)
       };
     return (
         <>
-            <select value={"Open"} onChange={handleOptionChange}>
+            <select value={selectedOption} onChange={handleOptionChange}>
                 <option value="Open">Open</option>
                 <option value="High">High</option>
                 <option value="Low">Low</option>
@@ -21,3 +24,5 @@ const Chart=()=>{
         </>
     )
 }
+
+export default Chart;
