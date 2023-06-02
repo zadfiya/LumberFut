@@ -5,12 +5,29 @@ import {Line} from "chart.js"
 
 
 const ChartComponent=({data})=>{
-    console.log(data)
     const [selectedOption, setSelectedOption] = useState("Open")
+    const [selectedData, setSelectedData] = useState([]);
+
+
     const handleOptionChange = (e) => {
         setSelectedOption(e.target.value)
         console.log(e.target.value)
       };
+
+      const chartData = {
+        labels: selectedData.map(item => item.Date),
+        datasets: [
+          {
+            label: selectedOption,
+            data: selectedData.map(item => item[selectedData]),
+            fill: false,
+            backgroundColor: 'rgba(255,0,0,0.4)',
+            borderColor: 'rgba(255,0,0,1)',
+            borderWidth: 2,
+          }
+        ]
+      };
+
     return (
         <>
             <select value={selectedOption} onChange={handleOptionChange}>
