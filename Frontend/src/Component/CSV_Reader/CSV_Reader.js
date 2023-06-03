@@ -9,7 +9,7 @@ import Slider from  'react-input-slider'
 const ChartComponent=({data})=>{
     const [selectedOption, setSelectedOption] = useState("Open")
     const [selectedData, setSelectedData] = useState([]);
-    const [x, setX] = useState(0);
+    const [x, setX] = useState(data.length/2);
 
     useEffect(()=>{
         setSelectedData(data.slice(0, x))
@@ -45,11 +45,23 @@ const ChartComponent=({data})=>{
         ]
         
       };
+const config={
+    position: "absolute",
+    left: "15%"
+}
 
+const silderStyle = {
+    track: {
+      //backgroundColor: '#ddd',
+      height: '10px',
+      width: '650px' // Adjust width here
+    },
+   
+}
 
     return (
         <>
-            <select value={selectedOption} onChange={handleOptionChange}>
+            <select value={selectedOption} style={config} onChange={handleOptionChange}>
                 <option value="Open">Open</option>
                 <option value="High">High</option>
                 <option value="Low">Low</option>
@@ -59,14 +71,15 @@ const ChartComponent=({data})=>{
             </select>
 
             <LineChart
-                width={700}
+                width={900}
                 height={500}
                 data={selectedData}
+                fill = {true}
                 margin={{
                 top: 5, right: 30, left: 20, bottom: 5,
                 }}
             >
-                {/* <CartesianGrid strokeDasharray="3 3" /> */}
+                <CartesianGrid strokeDasharray="5 5" />
                 <XAxis dataKey="Date" />
                 <YAxis />
                 <Tooltip />
@@ -74,7 +87,7 @@ const ChartComponent=({data})=>{
                 <Line type="monotone" dataKey={selectedOption} stroke="#8884d8" />
             </LineChart>
             
-            <Slider
+            <Slider styles={silderStyle}
             axis="x"
             xstep={1}
             xmin={1}
