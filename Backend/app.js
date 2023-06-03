@@ -6,8 +6,8 @@ var morgan = require('morgan');
 
 app.use(morgan("dev"))
 var router = require("./Src/Route/index");
+app.use(cors())
 app.use(router);
-app.use(cors)
 
 const PORT = process.env.port || 3001;
 app.listen(PORT, ()=>{
