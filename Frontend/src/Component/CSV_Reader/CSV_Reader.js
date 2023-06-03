@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import Slider from  'react-input-slider'
+import Slider from  'react-input-slider';
+import Loader from '../Loader/Loader.js' ;
 // import {Line} from 'react-chartjs-2'
 
 
@@ -9,7 +10,7 @@ import Slider from  'react-input-slider'
 const ChartComponent=({data})=>{
     const [selectedOption, setSelectedOption] = useState("Open")
     const [selectedData, setSelectedData] = useState([]);
-    const [x, setX] = useState(data.length/2);
+    const [x, setX] = useState(10);
 
     useEffect(()=>{
         setSelectedData(data.slice(0, x))
@@ -59,6 +60,8 @@ const silderStyle = {
    
 }
 
+    
+
     return (
         <>
             <select value={selectedOption} style={config} onChange={handleOptionChange}>
@@ -70,7 +73,7 @@ const silderStyle = {
                 <option value="Volume">Volume</option>
             </select>
 
-            <LineChart
+            {data.length>0 ? (<LineChart
                 width={900}
                 height={500}
                 data={selectedData}
@@ -85,7 +88,7 @@ const silderStyle = {
                 <Tooltip />
                 <Legend />
                 <Line type="monotone" dataKey={selectedOption} stroke="#8884d8" />
-            </LineChart>
+            </LineChart>) : (<Loader/>)}
             
             <Slider styles={silderStyle}
             axis="x"
@@ -96,6 +99,8 @@ const silderStyle = {
             onChange={({ x }) => {
              setX(x)}}
             />
+
+        {/* <div>Current Value: {selectedData[x]["Date"]}</div> */}
            
                 
            

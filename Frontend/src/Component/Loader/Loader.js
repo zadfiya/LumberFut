@@ -6,3 +6,5 @@ const Loader = ()=>
         <span className={LoaderCSS.loader}></span>
     )
 }
+
+export default Loader;
